@@ -30,7 +30,29 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    //输出指定名称apk
+    android.applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def fileName
+                if (variant.buildType.name == "release") {
+                    //apk名称为：前缀_渠道名称_版本号_版本名称_模式.apk
+                    fileName = "sdk_demo_${versionName}_${packageTime()}_release.apk"
+                } else {
+                    fileName = "sdk_demo_${versionName}_${packageTime()}_debug.apk"
+                }
+                outputFileName = fileName
+            }
+        }
+    }
 }
+
+static def packageTime() {
+    return new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("GMT+08:00"))
+}
+
 
 dependencies {
 
